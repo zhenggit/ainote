@@ -7,7 +7,7 @@ From SFT, RLHF to GRPO and some following RL algorithms.
 ### Objective
 
 ```math
-J_{SFT}(\theta) = 
+J_{SFT}(\theta) = \mathbb{E}_{x, y \sim P_{\mathrm{sft}} (X, Y)} 
 ```
 
 ```math
