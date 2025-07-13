@@ -7,7 +7,7 @@ From SFT, RLHF to GRPO and some following RL algorithms.
 ### Objective
 
 ```math
-J_{SFT}(\theta) = \mathbb{E}_{x, y \sim P_{\mathrm{sft}} (X, Y)} \left[ \frac{1}{|y|} \sum_{t=1}^{|y|} \log \pi_\theta \right],
+J_{SFT}(\theta) = \mathbb{E}_{x, y \sim P_{\mathrm{sft}} (X, Y)} \left[ \frac{1}{|y|} \sum_{t=1}^{|y|} \log \pi_\theta  (y_t | x, y) \right],
 ```
 
 ```math
