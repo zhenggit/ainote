@@ -14,7 +14,7 @@ where $`x`$ is the prompt and $`y = (y_1, y_2, \cdots)`$ is the answer. $`P_{\ma
 ### Gradient
 
 ```math
-\nabla_{\theta} J_{SFT}(\theta) = \mathbb{E}_{x, y \sim P_{\mathrm{sft}} (X, Y)} \left[ \frac{1}{|y|} \sum_{t=1}^{|y|} \log \nabla_\theta \pi_\theta (y_t | x, y_{< t}) \right]
+\nabla_{\theta} J_{SFT}(\theta) = \mathbb{E}_{x, y \sim P_{\mathrm{sft}} (X, Y)} \left[ \frac{1}{|y|} \sum_{t=1}^{|y|} \nabla_\theta \log \pi_\theta (y_t | x, y_{< t}) \right]
 ```
 
 ## PPO
@@ -53,8 +53,8 @@ Assume $`\pi_\theta = \pi_\mathrm{old}`$.
 ```math
 \nabla_\theta J_{\mathrm{PPO}} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}} (X), y \sim \pi_{\mathrm{old}} (Y | x)} \left[
   \frac{1}{|y|} \sum_{t=1}^{|y|} 
-    A_t \nabla_\theta \log \pi_\theta (y_t | x, y_{< t}).
-\right]
+    A_t \nabla_\theta \log \pi_\theta (y_t | x, y_{< t})
+\right].
 ```
 * THIS IS FROM GRPO PAPER, WHY???
 
@@ -95,6 +95,22 @@ where
 ```
 
 ## RFT (Rejection sampling Fine Tunning)
+
+### Objective
+
+```math
+J_{\mathrm{RFT}} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}} (X), y \sim \pi_{\mathrm{sft}} (Y | x)} \left[
+  \mathbb{I}(y) \cdot \frac{1}{|y|} \sum_{t=1}^{|y|}  \log \pi_\theta (y_t | x, y_{< t})
+\right]
+```
+
+### Gradient
+
+```math
+\nabla_\theta J_\mathrm{RFT} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}} (X), y \sim \pi_{\mathrm{sft}} (Y | x)} \left[
+  \mathbb{I}(y) \cdot \frac{1}{|y|} \sum_{t=1}^{|y|}  \nabla_\theta \log \pi_\theta (y_t | x, y_{< t})
+\right]
+```
 
 ## GRPO
 
