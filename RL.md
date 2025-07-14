@@ -22,7 +22,14 @@ where $`x`$ is the prompt and $`y = (y_1, y_2, \cdots)`$ is the answer. $`P_{\ma
 ### Objective
 
 ```math
-J_{\mathrm{PPO}} (\theta) = 
+J_{\mathrm{PPO}} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}}, y \sim \pi_{\mathrm{old} (Y | x)}} \left[
+  \frac{1}{|y|} \sum_{t=1}^{|y|} \min \left\{
+    A_t \cdot \frac{\pi_\theta (y_t | x, y_{< t})}{\pi_{\mathrm{old}} (y_t | x, y_{< t})},
+    A_t \mathrm{clip} \left(
+       \frac{\pi_\theta (y_t | x, y_{< t})}{\pi_{\mathrm{old}} (y_t | x, y_{< t})}, 1 - \epsilon, 1 + \epsilon
+    \right)
+  \right\}
+\right]
 ```
 
 
