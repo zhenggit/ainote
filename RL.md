@@ -1,6 +1,6 @@
 # RL notebook
 
-From SFT, RLHF to GRPO and some following RL algorithms.
+From SFT, PPO to GRPO and some following RL algorithms.
 
 ## SFT
 
@@ -17,19 +17,6 @@ where $`x`$ is the prompt and $`y = (y_1, y_2, \cdots)`$ is the answer (supervis
 \nabla_{\theta} J_{SFT}(\theta) = \mathbb{E}_{x, y \sim P_{\mathrm{sft}} (X, Y)} \left[ \frac{1}{|y|} \sum_{t=1}^{|y|} \log \nabla_\theta \pi_\theta (y_t | x, y_{< t}) \right]
 ```
 
-## RLHF
-
-### Objective
-
-```math
-J_{RLHF}(\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}} (X), y \sim \pi_{\mathrm{old}} (Y| x)} \left[ r_\phi (x, y) \right]- \beta \mathrm{KL} ( \pi_\theta \| \pi_\mathrm{old} ),
-```
-where
-```math
-\mathrm{KL}(\pi_\theta \| \pi_{\mathrm{old}}) = \mathbb{E}_{x \sim P_{\mathrm{sft}} (X), y \sim \pi_{\mathrm{old}} (Y| x)} \left[ \frac{1}{|y|} \sum_{t=1}^{|y|} \log \frac{\pi_\theta (y_t | x, y_{< t})}{\pi_\mathrm{old} (y_t | x, y_{< t})}\right]
-```
-and $`r_\phi(x,y)`$ is learned value function with parameter $`\phi`$.
-
 ## PPO
 
 ### Objective
@@ -37,6 +24,17 @@ and $`r_\phi(x,y)`$ is learned value function with parameter $`\phi`$.
 ```math
 J_{\mathrm{PPO}} (\theta) = 
 ```
+
+
+
+reward model(per-token)
+
+```math
+r_t = r_\phi (x, y_{\le t})- \beta \log \frac{\pi_\theta (y_t | x, y_{< t})}{\pi_\mathrm{ref} (y_t | x, y_{< t})}
+```
+where $`r_\phi(x,y_{\le t})`$ is a (raw) reward model with parameter $`\phi`$.
+
+GAE: Advantage $`A_t = GAE(r_{\ge t}, V_{\varphi})`$ where $`V_{\varphi}`$ is a value function trained alongside the policy model.
 
 ### Gradient
 
