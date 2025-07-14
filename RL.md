@@ -22,7 +22,7 @@ where $`x`$ is the prompt and $`y = (y_1, y_2, \cdots)`$ is the answer. $`P_{\ma
 ### Objective
 
 ```math
-J_{\mathrm{PPO}} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}}, y \sim \pi_{\mathrm{old} (Y | x)}} \left[
+J_{\mathrm{PPO}} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}} (X), y \sim \pi_{\mathrm{old} (Y | x)}} \left[
   \frac{1}{|y|} \sum_{t=1}^{|y|} \min \left\{
     A_t \cdot \frac{\pi_\theta (y_t | x, y_{< t})}{\pi_{\mathrm{old}} (y_t | x, y_{< t})},
     A_t \mathrm{clip} \left(
@@ -46,6 +46,15 @@ where $`r(x,y_{\le t})`$ is a (raw) reward model.
 
 
 ### Gradient
+
+Assume $`\pi_\theta = \pi_\mathrm{old}`$.
+```math
+\nabla_\theta J_{\mathrm{PPO}} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}} (X), y \sim \pi_{\mathrm{old} (Y | x)}} \left[
+  \frac{1}{|y|} \sum_{t=1}^{|y|} 
+    A_t \nabla_\theta \log \pi_\theta (y_t | x, y_{< t}).
+\right]
+```
+* THIS IS FROM GRPO PAPER, WHY???
 
 ## DPO
 
