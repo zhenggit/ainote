@@ -32,16 +32,18 @@ J_{\mathrm{PPO}} (\theta) = \mathbb{E}_{x \sim P_{\mathrm{sft}}, y \sim \pi_{\ma
 \right]
 ```
 
-
-
-reward model(per-token)
+where the advantage (from GAE alg.)
 
 ```math
-r_t = r_\phi (x, y_{\le t})- \beta \log \frac{\pi_\theta (y_t | x, y_{< t})}{\pi_\mathrm{ref} (y_t | x, y_{< t})}
+A_t = \delta_t + \gamma \lambda \delta_{t+1} + \cdots + (\gamma \lambda)^{T-t+1} \delta_{T-1},
 ```
-where $`r_\phi(x,y_{\le t})`$ is a (raw) reward model with parameter $`\phi`$.
+with $`\delta_t = r_t + \gamma V_\phi(s_{t+1}) - V_\phi (s_t)`$ and $`V_\phi (s)`$ is the value function trained alongside. Here, $`r_t`$ is the per-token reward model
 
-GAE: Advantage $`A_t = GAE(r_{\ge t}, V_{\varphi})`$ where $`V_{\varphi}`$ is a value function trained alongside the policy model.
+```math
+r_t = r (x, y_{\le t})- \beta \log \frac{\pi_\theta (y_t | x, y_{< t})}{\pi_\mathrm{ref} (y_t | x, y_{< t})}
+```
+where $`r(x,y_{\le t})`$ is a (raw) reward model.
+
 
 ### Gradient
 
