@@ -131,7 +131,7 @@ J_\mathrm{DAPO} (\theta) = \mathbb{E}_{x \sim P(X), \{y_i\}_{i=1}^G \sim \pi_\ma
 \color{green}{\frac{1}{\sum_{i=1}^G |y_i|} \sum_{i=1}^G \sum_{t=1}^{|y_i|}} \color{red}{ S_{\epsilon_\mathrm{low}, \epsilon_\mathrm{high}} }  \color{black}{\left(\frac{\pi_\theta (y_{i,t} | x, y_{i, < t})}{\pi_\mathrm{old} (y_{i, t} | x, y_{i, < t})}, A_{i,t} \right) }
 ```
 
-* Clip-Higher: $`S_{\epsilon_\mathrm{low}, \epsilon_\mathrm{high}} (r, a) = \min \{ ra, \mathrm{clip} (r, 1-\epsilon_\mathrm{low}, 1+\epsilon_\mathrm{high}) a\}`$. A much larger $`\epsilon_\mathrm{high}`$ prevents entropy collapse and boosts exploration.
+* Clip-Higher (and removing KL Divergence): $`S_{\epsilon_\mathrm{low}, \epsilon_\mathrm{high}} (r, a) = \min \{ ra, \mathrm{clip} (r, 1-\epsilon_\mathrm{low}, 1+\epsilon_\mathrm{high}) a\}`$. A much larger $`\epsilon_\mathrm{high}`$ prevents entropy collapse and boosts exploration.
 * Dynamic Sampling: $`| \{y_i | \text{is\_equivalent}(y_i, \mathrm{ans}(x)) \}| \in (0,G)`$ discards prompts whose accuracy is 0 or 1 so every example contributes gradient signal, improving sample efficiency and convergence speed.
 * Token-level Policy Gradient loss $`\frac{1}{\sum_{i=1}^G |y_i|} \sum_{i=1}^G \sum_{t=1}^{|y_i|} S_{\epsilon_\mathrm{low}, \epsilon_\mathrm{high}} (\cdot)`$.
 * Overlong Reward Shaping: $`A_{i,t}`$ comes from the reward $`r(\mathrm{ans}(x),y) = R_\mathrm{rule} (\mathrm{ans}(x), y) + R_\mathrm{length}(y)`$, where
@@ -151,11 +151,10 @@ R_\mathrm{length} (y) = \left\{
 \end{array}
 \right.
 ```
-* Removing KL Divergence.
-
 
 ## Some discussion
 
 ### reward hacking problem
-Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization, 2022.
-Lilian Weng. Reward hacking in reinforcement learning. lilianweng.github.io, Nov 2024.
+
+* Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization, 2022.
+* Lilian Weng. Reward hacking in reinforcement learning. lilianweng.github.io, Nov 2024.
