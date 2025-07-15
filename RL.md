@@ -52,7 +52,7 @@ Assume $`\pi_\theta = \pi_\mathrm{old}`$.
     A_t \nabla_\theta \log \pi_\theta (y_t | x, y_{< t})
 \right].
 ```
-* THIS IS FROM GRPO PAPER, WHY???
+$`\color{red}\text{THIS IS FROM GRPO PAPER, WHY???}`$
 
 ## DPO
 
@@ -123,3 +123,39 @@ J_\mathrm{GRPO} (\theta) = \mathbb{E}_{x \sim P(X), \{y_i\}_{i=1}^G \sim \pi_\ma
 where $`S_\epsilon(r, a) = \min \{ra, \mathrm{clip}(r, 1-\epsilon, 1+\epsilon) a\}`$ and $`D(r) = r - \log r -1`$.
 
 ## DAPO
+
+### Objective
+
+```math
+J_\mathrm{DAPO} (\theta) = \mathbb{E}_{x \sim P(X), \{y_i\}_{i=1}^G \sim \pi_\mathrm{old} (Y|x), \color{red}{ | \{y_i | \text{is\_equivalent}(y_i, \mathrm{ans}(x)) \}| \in (0,G)}}
+\color{green}{\frac{1}{\sum_{i=1}^G |y_i|} \sum_{i=1}^G \sum_{t=1}^{|y_i|}} \color{red}{ S_{\epsilon_\mathrm{low}, \epsilon_\mathrm{high}} }  \color{black}{\left(\frac{\pi_\theta (y_{i,t} | x, y_{i, < t})}{\pi_\mathrm{old} (y_{i, t} | x, y_{i, < t})}, A_{i,t} \right) }
+```
+
+* Clip-Higher: $`S_{\epsilon_\mathrm{low}, \epsilon_\mathrm{high}} (r, a) = \min \{ ra, \mathrm{clip} (r, 1-\epsilon_\mathrm{low}, 1+\epsilon_\mathrm{high}) a\}`$. A much larger $`\epsilon_\mathrm{high}`$ prevents entropy collapse and boosts exploration.
+* Dynamic Sampling: $`| \{y_i | \text{is\_equivalent}(y_i, \mathrm{ans}(x)) \}| \in (0,G)`$ discards prompts whose accuracy is 0 or 1 so every example contributes gradient signal, improving sample efficiency and convergence speed.
+* Token-level Policy Gradient loss $`\frac{1}{\sum_{i=1}^G |y_i|} \sum_{i=1}^G \sum_{t=1}^{|y_i|} S_{\epsilon_\mathrm{low}, \epsilon_\mathrm{high}} (\cdot)`$.
+* Overlong Reward Shaping: $`A_{i,t}`$ comes from the reward $`r(\mathrm{ans}(x),y) = R_\mathrm{rule} (\mathrm{ans}(x), y) + R_\mathrm{length}(y)`$, where
+```math
+R_\mathrm{rule} (\mathrm{ans}(x), y) = \left\{
+\begin{array}{ll}
+1, & \text{is\_equivalent}(\mathrm{ans}(x), y) \\
+-1, & \text{otherwise}.
+\end{array}\right.
+```
+```math
+R_\mathrm{length} (y) = \left\{
+\begin{array}{ll}
+0, & |y| \le L_\max - L_\mathrm{cache}, \\
+(L_\max - L_\mathrm{cache} - |y|) / L_\mathrm{cache}, & L_\max - L_\mathrm{cache} < |y| \le L_\max, \\
+-1, & |y| > L_\max.
+\end{array}
+\right.
+```
+* Removing KL Divergence.
+
+
+## Some discussion
+
+### reward hacking problem
+Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization, 2022.
+Lilian Weng. Reward hacking in reinforcement learning. lilianweng.github.io, Nov 2024.
