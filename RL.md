@@ -120,7 +120,11 @@ J_\mathrm{GRPO} (\theta) = \mathbb{E}_{x \sim P(X), \{y_i\}_{i=1}^G \sim \pi_\ma
   - D \left( \frac{\pi_\mathrm{ref} (y_{i,t} | x, y_{i, < t})}{\pi_\theta (y_{i, t} | x, y_{i, < t})} \right)
 \right],
 ```
-where $`S_\epsilon(r, a) = \min \{ra, \mathrm{clip}(r, 1-\epsilon, 1+\epsilon) a\}`$ and $`D(r) = r - \log r -1`$.
+where $`S_\epsilon(r, a) = \min \{ra, \mathrm{clip}(r, 1-\epsilon, 1+\epsilon) a\}`$, $`D(r) = r - \log r -1`$ and
+where 
+```math
+A_{i,t} = A_i = \frac{r(x, y_i) - \mathrm{mean}(\{r(x, y_i)\}_{i=1}^G) }{\mathrm{std}(\{r(x, y_i)\}_{i=1}^G) }.
+```
 
 ## DAPO
 
@@ -151,6 +155,19 @@ R_\mathrm{length} (y) = \left\{
 \end{array}
 \right.
 ```
+
+## GSPO
+
+### Objective
+
+```math
+J_\mathrm{GSPO} (\theta) = \mathbb{E}_{x\sim P(X),  \{y_i\}_{i=1}^G \sim \pi_\mathrm{old} (Y|x)}
+\left[
+\frac{1}{G} \sum_{i=1}^G S_{\epsilon} \left( \exp \left( \frac{1}{|y_i|} \sum_{t=1}^{|y_i|}
+\log \frac{\pi_\theta (y_{i,t} | x, y_{i, < t})}{ \pi_\mathrm{old} (y_{i, t} | x, y_{i, < t})} \right), A_i \right)
+\right],
+```
+where $A_i$ is the same as GRPO.
 
 ## Some discussion
 
